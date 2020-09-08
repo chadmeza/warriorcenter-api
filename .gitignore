@@ -1,0 +1,10 @@
+.ebextensions/
+coverage/
+docs/
+node_modules/
+npm-debug.log
+package-lock.json
+test/*.log
+.env
+Archive.zip
+Archive_expired.zip
