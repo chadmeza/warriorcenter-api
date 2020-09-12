@@ -21,7 +21,7 @@ const userSchema = mongoose.Schema({
 userSchema.methods.generateAuthToken = function() {
     const token = jwt.sign(
         { email: this.email, userId: this._id }, 
-        'warrior-center-bellflower',
+        process.env.JWT_TOKEN,
         { expiresIn: '3h' });
 
     return token;
