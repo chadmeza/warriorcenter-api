@@ -29,9 +29,7 @@ exports.createUser = async (req, res, next) => {
             emailResponse: emailResponse
         });
     } catch(error) {
-        res.status(500).json({
-            error: 'Could not create user.'
-        });
+        next(error);
     }
 };
 
@@ -73,9 +71,7 @@ exports.loginUser = async (req, res, next) => {
             userId: loggedInUser._id
         });
     } catch(error) {
-        res.status(500).json({
-            error: 'Could not login to this account.'
-        });
+        next(error);
     }
 };
 
@@ -125,9 +121,7 @@ exports.forgotPassword = async (req, res, next) => {
             emailResponse: emailResponse
         });
     } catch(error) {
-        res.status(500).json({
-            error: 'Could not update this user.'
-        });
+        next(error);
     }
 };
 
@@ -168,9 +162,7 @@ exports.changePassword = async (req, res, next) => {
             user: result
         });
     } catch(error) {
-        res.status(500).json({
-            error: 'Could not update this user.'
-        });
+        next(error);
     }
 };
 

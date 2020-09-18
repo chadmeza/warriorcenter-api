@@ -1,12 +1,12 @@
 {
   "name": "warriorcenter",
   "version": "1.0.0",
-  "description": "",
+  "description": "REST API for Warrior Center CMS, Web app, and mobile app.",
   "main": "server.js",
   "scripts": {
     "test": "jest --watchAll --coverage"
   },
-  "author": "",
+  "author": "Chad Meza",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",

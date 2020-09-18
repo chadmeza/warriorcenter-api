@@ -10,9 +10,7 @@ exports.getSermons = async (req, res, next) => {
             sermons: sermons
         });
     } catch(error) {
-        res.status(500).json({
-            error: 'Could not find any sermons.'
-        });
+        next(error);
     }
 };
 
@@ -32,9 +30,7 @@ exports.getLimitedSermons = async (req, res, next) => {
             sermons: sermons
         });
     } catch(error) {
-        res.status(500).json({
-            error: 'Could not find any sermons.'
-        });
+        next(error);
     }
 };
 
@@ -52,9 +48,7 @@ exports.getSermon = async (req, res, next) => {
             });
         }
     } catch(error) {
-        res.status(500).json({
-            error: 'Could not find this sermon.'
-        });
+        next(error);
     }
 };
 
@@ -86,9 +80,7 @@ exports.createSermon = async (req, res, next) => {
             id: newSermon._id
         });
     } catch(error) {
-        res.status(500).json({
-            error: 'Could not create a new sermon.'
-        });
+        next(error);
     }
 };
   
@@ -115,9 +107,7 @@ exports.updateSermon = async (req, res, next) => {
             sermon: result 
         });
     } catch(error) {
-        res.status(500).json({
-            error: 'Could not update this sermon.'
-        });
+        next(error);
     }
 };
   
@@ -146,8 +136,6 @@ exports.deleteSermon = async (req, res, next) => {
             sermon: result
         });
     } catch(error) {
-        res.status(500).json({
-            error: 'Could not delete this sermon.'
-        });
+        next(error);
     }
 };

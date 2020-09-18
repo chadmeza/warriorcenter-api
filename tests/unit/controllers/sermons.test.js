@@ -6,6 +6,7 @@ const Sermon = require("../../../models/sermon");
 
 let req, res, next;
 let sermons;
+let testError;
 
 describe("sermonsController", () => {
     beforeEach(() => {
@@ -18,6 +19,8 @@ describe("sermonsController", () => {
         Sermon.create = jest.fn();
         Sermon.findByIdAndUpdate = jest.fn();
         Sermon.deleteOne = jest.fn();
+
+        testError = new Error("Test");
 
         util.promisify = jest.fn();
     
@@ -65,13 +68,12 @@ describe("sermonsController", () => {
             expect(res._getJSONData()).toMatchObject({ "sermons": sermons });
         });
     
-        it("should return a 500 error if there's a problem with the query", async () => {
-            Sermon.find.mockRejectedValue(new Error("Test"));
+        it("should forward errors to the error handler", async () => {
+            Sermon.find.mockRejectedValue(testError);
     
             await sermonsController.getSermons(req, res, next);
     
-            expect(res.statusCode).toBe(500);
-            expect(res._getJSONData()).toHaveProperty("error");
+            expect(next).toHaveBeenCalled(); 
         });
     });
 
@@ -106,13 +108,12 @@ describe("sermonsController", () => {
             expect(res._getJSONData().sermons.length).toBe(sermons.length);
         });
 
-        it("should return a 500 error if there's a problem with the query", async () => {
-            Sermon.find.mockRejectedValue(new Error("Test"));
+        it("should forward errors to the error handler", async () => {
+            Sermon.find.mockRejectedValue(testError);
 
             await sermonsController.getLimitedSermons(req, res, next);
 
-            expect(res.statusCode).toBe(500);
-            expect(res._getJSONData()).toHaveProperty("error");
+            expect(next).toHaveBeenCalledWith(testError);
         });
     });
 
@@ -136,13 +137,12 @@ describe("sermonsController", () => {
             expect(res._getJSONData()).toHaveProperty("error");
         });
 
-        it("should return a 500 error if there's a problem with the query", async () => {
-            Sermon.findById.mockRejectedValue(new Error("Test"));
+        it("should forward errors to the error handler", async () => {
+            Sermon.findById.mockRejectedValue(testError);
 
             await sermonsController.getSermon(req, res, next);
 
-            expect(res.statusCode).toBe(500);
-            expect(res._getJSONData()).toHaveProperty("error");
+            expect(next).toHaveBeenCalledWith(testError); 
         });
     });
 
@@ -174,13 +174,12 @@ describe("sermonsController", () => {
             expect(res._getJSONData()).toHaveProperty("error");
         });
 
-        it("should return a 500 error if there's a problem with the query", async () => {
-            Sermon.find.mockRejectedValue(new Error("Test"));
+        it("should forward errors to the error handler", async () => {
+            Sermon.find.mockRejectedValue(testError);
 
             await sermonsController.createSermon(req, res, next);
 
-            expect(res.statusCode).toBe(500);
-            expect(res._getJSONData()).toHaveProperty("error");
+            expect(next).toHaveBeenCalledWith(testError);
         });
     });
 
@@ -206,13 +205,12 @@ describe("sermonsController", () => {
             expect(res._getJSONData()).toHaveProperty("error");
         });
 
-        it("should return a 500 error if there's a problem with the query", async () => {
-            Sermon.findByIdAndUpdate.mockRejectedValue(new Error("Test"));
+        it("should forward errors to the error handler", async () => {
+            Sermon.findByIdAndUpdate.mockRejectedValue(testError);
 
             await sermonsController.updateSermon(req, res, next);
 
-            expect(res.statusCode).toBe(500);
-            expect(res._getJSONData()).toHaveProperty("error");
+            expect(next).toHaveBeenCalledWith(testError);
         });
     });
 
@@ -240,17 +238,16 @@ describe("sermonsController", () => {
             expect(res._getJSONData()).toHaveProperty("error");
         });
 
-        it("should return a 500 error if there's a problem with the query", async () => {
+        it("should forward errors to the error handler", async () => {
             Sermon.findById.mockReturnValue(sermons[0]);
-            Sermon.deleteOne.mockRejectedValue(new Error("Test"));
+            Sermon.deleteOne.mockRejectedValue(testError);
             util.promisify.mockReturnValue(function () {
                 return null;
             });
 
             await sermonsController.deleteSermon(req, res, next);
 
-            expect(res.statusCode).toBe(500);
-            expect(res._getJSONData()).toHaveProperty("error");
+            expect(next).toHaveBeenCalledWith(testError);
         });
     });
 });

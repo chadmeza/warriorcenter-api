@@ -41,4 +41,14 @@ app.use('/api/sermons', sermonRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/users', userRoutes);
 
+app.use(function (err, req, res, next) {
+    if (res.headersSent) {
+      return next(err);
+    }
+
+    res.status(500).json({
+        error: 'Error: An error has occurred.'
+    });
+});
+
 module.exports = app;

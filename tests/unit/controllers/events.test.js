@@ -5,6 +5,7 @@ const Event = require("../../../models/event");
 
 let req, res, next;
 let events;
+let testError;
 
 describe("eventsController", () => {
     beforeEach(() => {
@@ -18,6 +19,8 @@ describe("eventsController", () => {
         Event.findByIdAndUpdate = jest.fn();
         Event.deleteOne = jest.fn();
         Event.deleteMany = jest.fn();
+
+        testError = new Error("Test");
     
         events = [
             {
@@ -63,13 +66,12 @@ describe("eventsController", () => {
             expect(res._getJSONData()).toMatchObject({ "events": events });
         }); 
         
-        it("should return a 500 error if a problem exists in the query", async () => {
-            Event.find.mockRejectedValue(new Error("Test"));
+        it("should forward errors to the error handler", async () => {
+            Event.find.mockRejectedValue(testError);
     
             await eventsController.getEvents(req, res, next);
     
-            expect(res.statusCode).toBe(500);
-            expect(res._getJSONData()).toHaveProperty("error");
+            expect(next).toHaveBeenCalled();
         });
     });
     
@@ -104,13 +106,12 @@ describe("eventsController", () => {
             expect(res._getJSONData().events).toMatchObject(events);
         });
     
-        it("should return a 500 error is a problem exists in the query", async () => {
-            Event.find.mockRejectedValue(new Error("Test"));
+        it("should forward errors to the error handler", async () => {
+            Event.find.mockRejectedValue(testError);
     
             await eventsController.getLimitedEvents(req, res, next);
     
-            expect(res.statusCode).toBe(500);
-            expect(res._getJSONData()).toHaveProperty("error");
+            expect(next).toHaveBeenCalledWith(testError);
         });
     });
     
@@ -144,13 +145,12 @@ describe("eventsController", () => {
             expect(res._getJSONData()).toHaveProperty("error");
         });
     
-        it("should return a 500 error if a problem exists in the query", async () => {
-            Event.findById.mockRejectedValue(new Error("Test"));
+        it("should forward errors to the error handler", async () => {
+            Event.findById.mockRejectedValue(testError);
     
             await eventsController.getEvent(req, res, next);
     
-            expect(res.statusCode).toBe(500);
-            expect(res._getJSONData()).toHaveProperty("error");
+            expect(next).toHaveBeenCalledWith(testError);
         });
     });
     
@@ -165,13 +165,12 @@ describe("eventsController", () => {
             expect(res._getJSONData().event).toMatchObject(events[0]);
         });
     
-        it("should return a 500 error on failed save", async () => {
-            Event.create.mockRejectedValue(new Error("Failed to save."));
+        it("should forward errors to the error handler", async () => {
+            Event.create.mockRejectedValue(testError);
     
             await eventsController.createEvent(req, res, next);
     
-            expect(res.statusCode).toBe(500);
-            expect(res._getJSONData()).toHaveProperty("error");
+            expect(next).toHaveBeenCalledWith(testError);
         });
     });
     
@@ -194,13 +193,12 @@ describe("eventsController", () => {
             expect(res.statusCode).toBe(404);
         });
         
-        it("should return a 500 error if there's a problem with the query", async () => {
-            Event.findByIdAndUpdate.mockRejectedValue(new Error("Test"));
+        it("should forward errors to the error handler", async () => {
+            Event.findByIdAndUpdate.mockRejectedValue(testError);
     
             await eventsController.updateEvent(req, res, next);
     
-            expect(res.statusCode).toBe(500);
-            expect(res._getJSONData()).toHaveProperty("error");
+            expect(next).toHaveBeenCalledWith(testError);
         });
     });
     
@@ -216,13 +214,12 @@ describe("eventsController", () => {
             expect(res._getJSONData()).toHaveProperty("result");
         });
     
-        it("should return a 500 error if there's a problem with the query", async () => {
-            Event.deleteOne.mockRejectedValue(new Error("Test"));
+        it("should forward errors to the error handler", async () => {
+            Event.deleteOne.mockRejectedValue(testError);
     
             await eventsController.deleteEvent(req, res, next);
     
-            expect(res.statusCode).toBe(500);
-            expect(res._getJSONData()).toHaveProperty("error");
+            expect(next).toHaveBeenCalledWith(testError);
         });
     });
     
@@ -236,13 +233,12 @@ describe("eventsController", () => {
             expect(res._getJSONData()).toHaveProperty("result");
         });
     
-        it("should return a 500 error if there's a problem with the query", async () => {
-            Event.deleteMany.mockRejectedValue(new Error("Test"));
+        it("should forward errors to the error handler", async () => {
+            Event.deleteMany.mockRejectedValue(testError);
     
             await eventsController.deleteOldEvents(req, res, next);
     
-            expect(res.statusCode).toBe(500);
-            expect(res._getJSONData()).toHaveProperty("error");
+            expect(next).toHaveBeenCalledWith(testError);
         });
     });
 });

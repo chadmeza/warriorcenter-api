@@ -6,6 +6,7 @@ const User = require("../../../models/user");
 
 let req, res, next;
 let users;
+let testError;
 
 describe("eventsController", () => {
     beforeEach(() => {
@@ -21,6 +22,8 @@ describe("eventsController", () => {
         User.create = jest.fn();
         User.findOne = jest.fn();
         User.updateOne = jest.fn();
+
+        testError = new Error("Test");
 
         users = [
             {
@@ -60,13 +63,12 @@ describe("eventsController", () => {
             expect(res._getJSONData()).toHaveProperty("emailResponse");
         });
 
-        it("should return a 500 error if there's a problem with the query", async () => {
-            User.create.mockRejectedValue(new Error("Test"));
+        it("should forward any errors to the error handler", async () => {
+            User.create.mockRejectedValue(testError);
 
             await usersController.createUser(req, res, next);
 
-            expect(res.statusCode).toBe(500);
-            expect(res._getJSONData()).toHaveProperty("error");
+            expect(next).toHaveBeenCalledWith(testError);
         });
     });
 
@@ -141,13 +143,12 @@ describe("eventsController", () => {
             expect(res._getJSONData()).toHaveProperty("emailResponse");
         });
 
-        it("should return a 500 error if there's a problem with the query", async () => {
-            User.findOne.mockRejectedValue(new Error("Test"));
+        it("should forward errors to the error handler", async () => {
+            User.findOne.mockRejectedValue(testError);
 
             await usersController.forgotPassword(req, res, next);
 
-            expect(res.statusCode).toBe(500);
-            expect(res._getJSONData()).toHaveProperty("error");
+            expect(next).toHaveBeenCalledWith(testError);
         });
     });
 
@@ -186,12 +187,11 @@ describe("eventsController", () => {
         });
 
         it("should return a 500 error if there's a problem with the query", async () => {
-            User.findOne.mockRejectedValue(new Error("Test"));
+            User.findOne.mockRejectedValue(testError);
 
             await usersController.changePassword(req, res, next);
 
-            expect(res.statusCode).toBe(500);
-            expect(res._getJSONData()).toHaveProperty("error");
+            expect(next).toHaveBeenCalledWith(testError);
         });
     });
 });

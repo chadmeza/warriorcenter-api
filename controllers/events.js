@@ -8,9 +8,7 @@ exports.getEvents = async (req, res, next) => {
             events: events
         });
     } catch(error) {
-        res.status(500).json({
-            error: 'Could not find any events.'
-        });
+        next(error);
     }
 };
 
@@ -30,9 +28,7 @@ exports.getLimitedEvents = async (req, res, next) => {
             events: events
         });
     } catch(error) {
-        res.status(500).json({
-            error: 'Could not find any events.'
-        });
+        next(error);
     }
 };
 
@@ -50,9 +46,7 @@ exports.getEvent = async (req, res, next) => {
             });
         }
     } catch(error) {
-        res.status(500).json({
-            error: 'Could not find this event.'
-        });
+        next(error);
     }
 };
 
@@ -71,9 +65,7 @@ exports.createEvent = async (req, res, next) => {
             id: event._id
         });
     } catch(error) {
-        res.status(500).json({
-            error: 'Could not create a new event.'
-        });
+        next(error);
     }
 };
   
@@ -100,9 +92,7 @@ exports.updateEvent = async (req, res, next) => {
             event: result
         });
     } catch(error) {
-        res.status(500).json({
-            error: 'Could not update this event.'
-        });
+        next(error);
     }
 };
   
@@ -114,9 +104,7 @@ exports.deleteEvent = async (req, res, next) => {
             result: result
         });
     } catch(error) {
-        res.status(500).json({
-            error: 'Could not delete this event.'
-        });
+        next(error);
     }
 };
 
@@ -128,8 +116,6 @@ exports.deleteOldEvents = async (req, res, next) => {
             result: result
         });
     } catch(error) {
-        res.status(500).json({
-            error: 'Could not delete events.'
-        });
+        next(error);
     }
 };

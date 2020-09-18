@@ -61,4 +61,8 @@ server.on('listening', onListening);
 // Start server
 server.listen(port);
 
+process.on('unhandledRejection', (err, promise) => {
+    server.close(() => process.exit(1));
+});
+
 module.exports = server;
